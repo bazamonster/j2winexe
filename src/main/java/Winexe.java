@@ -64,31 +64,52 @@ public class Winexe {
             return this;
         }
 
-        public List<String> run() throws IOException {
+        public List<Response> run() throws IOException {
             String hostname = this.hostname;
             this.hostname = null;
             List<String> commands = new ArrayList<>(this.commands);
             this.commands.clear();
             if (hostname == null) throw new NullPointerException("Remote hostname is null");
             if (commands.isEmpty()) throw new NullPointerException("Command is null");
-            List<String> result = new ArrayList<>();
-            for (String command : commands){
-                String[] winexeCommand = new String[] {
-                        "winexe",
-                        "//" + hostname,
-                        command,
-                        "--user=" + domain + "/" + username + "%" + password
-                };
-                result.addAll(
-                        IOUtils
-                                .readLines(
-                                        processBuilder
-                                                .command(winexeCommand)
-                                                .start()
-                                                .getInputStream(), "CP866"
-                                ));
+            List<Response> result = new ArrayList<>();
+            List<Thread> threads = new ArrayList<>();
+            for (String command : commands) {
+                Response response = new Response();
+                response.setCommand(command);
+                response.setHostname(hostname);
+                threads.add(new Thread(()->{
+                    try {
+                        response.setResult(execCommand(command, hostname));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    result.add(response);
+                }));
             }
+            threads.forEach(Thread::start);
+            threads.forEach(thread -> {
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
             return result;
+        }
+        private List<String> execCommand(String command, String hostname) throws IOException {
+            String[] winexeCommand = new String[] {
+                    "winexe",
+                    "//" + hostname,
+                    command,
+                    "--user=" + domain + "/" + username + "%" + password
+            };
+            return IOUtils
+                    .readLines(
+                            processBuilder
+                                    .command(winexeCommand)
+                                    .start()
+                                    .getInputStream(), "CP866"
+                    );
         }
 
     }
