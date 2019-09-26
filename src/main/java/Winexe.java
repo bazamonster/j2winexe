@@ -64,7 +64,7 @@ public class Winexe {
             return this;
         }
 
-        public List<Response> run() throws IOException {
+        public List<Response> run(){
             String hostname = this.hostname;
             this.hostname = null;
             List<String> commands = new ArrayList<>(this.commands);
