@@ -28,7 +28,7 @@ public class Response {
     @Override
     public String toString(){
         StringBuilder result = new StringBuilder("[");
-        if (this.result.isEmpty()) result = null;
+        if (this.result == null || this.result.isEmpty()) result = null;
         else {
             for (String line : this.result){
                 result.append("\"").append(line).append("\"").append(",");

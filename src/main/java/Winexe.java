@@ -1,6 +1,3 @@
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +7,7 @@ public class Winexe {
     private String username;
     private String password;
     private String domain;
-    private final ProcessBuilder processBuilder = new ProcessBuilder();
+    private final Bash bash = new Bash();
 
     public static Builder initCredentialWhere(){
         return new Winexe().new Builder();
@@ -78,11 +75,7 @@ public class Winexe {
                 response.setCommand(command);
                 response.setHostname(hostname);
                 threads.add(new Thread(()->{
-                    try {
-                        response.setResult(execCommand(command, hostname));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    response.setResult(execCommand(command, hostname));
                     result.add(response);
                 }));
             }
@@ -96,20 +89,14 @@ public class Winexe {
             });
             return result;
         }
-        private List<String> execCommand(String command, String hostname) throws IOException {
+        private List<String> execCommand(String command, String hostname) {
             String[] winexeCommand = new String[] {
                     "winexe",
                     "//" + hostname,
                     command,
                     "--user=" + domain + "/" + username + "%" + password
             };
-            return IOUtils
-                    .readLines(
-                            processBuilder
-                                    .command(winexeCommand)
-                                    .start()
-                                    .getInputStream(), "CP866"
-                    );
+            return bash.execCommand(winexeCommand, "CP866");
         }
 
     }
