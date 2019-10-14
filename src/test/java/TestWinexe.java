@@ -1,3 +1,6 @@
+import winexe.Response;
+import winexe.Winexe;
+
 import java.util.List;
 
 public class TestWinexe {
