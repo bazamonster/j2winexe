@@ -22,4 +22,20 @@ public class Bash {
             return null;
         }
     }
+
+    public List<String> execCommand(String command, String encoding){
+        try {
+            return IOUtils
+                    .readLines(
+                            Runtime
+                                    .getRuntime()
+                                    .exec(command)
+                                    .getInputStream(), encoding
+                    );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
