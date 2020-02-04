@@ -1,21 +1,26 @@
-import winexe.Response;
 import winexe.Winexe;
+import winexe.Wmic;
 
-import java.util.List;
+import java.util.Map;
 
 public class TestWinexe {
     public static void main(String[] args) {
         Winexe winexe = Winexe
                 .initCredentialWhere()
-                .usernameIs("user")
-                .passwordIs("12345")
-                .domainIs("example")
+                .usernameIs("bannykh")
+                .passwordIs("6384182Ka")
+                .domainIs("bank24")
                 .init();
-        List<Response> result = winexe
+        /*List<Response> result = winexe
                 .execute()
                 .command("ping localhost")
                 .inHost("127.0.0.1")
                 .run();
-        result.forEach(System.out::println);
+        result.forEach(System.out::println);*/
+        Wmic wmic = new Wmic();
+        Map<String, String> wmiParams = wmic.getWmiParam(winexe, "babikov", "computersystem", "username");
+        for (Map.Entry<String,String> pair : wmiParams.entrySet()){
+            System.out.println(pair.getKey()+":"+pair.getValue());
+        }
     }
 }

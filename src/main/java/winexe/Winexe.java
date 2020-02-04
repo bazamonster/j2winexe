@@ -54,7 +54,12 @@ public class Winexe {
         private Executor(){}
 
         public Executor command(String command){
-            commands.add(command);
+            this.commands.add(command);
+            return this;
+        }
+
+        public Executor commands(List<String> commands){
+            this.commands.addAll(commands);
             return this;
         }
 
@@ -71,24 +76,31 @@ public class Winexe {
             if (hostname == null) throw new NullPointerException("Remote hostname is null");
             if (commands.isEmpty()) throw new NullPointerException("Command is null");
             List<Response> result = new ArrayList<>();
-            List<Thread> threads = new ArrayList<>();
+            //List<Thread> threads = new ArrayList<>();
             for (String command : commands) {
                 Response response = new Response();
                 response.setCommand(command);
                 response.setHostname(hostname);
-                threads.add(new Thread(()->{
+                //threads.add(new Thread(()->{
                     response.setResult(execCommand(command, hostname));
                     result.add(response);
-                }));
+                //}));
             }
-            threads.forEach(Thread::start);
-            threads.forEach(thread -> {
+            /*for (Thread thread1 : threads) {
+                thread1.start();
+                try {
+                    thread1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            *//*threads.forEach(thread -> {
                 try {
                     thread.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            });
+            });*/
             return result;
         }
         private List<String> execCommand(String command, String hostname) {
