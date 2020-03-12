@@ -7,9 +7,9 @@ public class TestWinexe {
     public static void main(String[] args) {
         Winexe winexe = Winexe
                 .initCredentialWhere()
-                .usernameIs("bannykh")
-                .passwordIs("6384182Ka")
-                .domainIs("bank24")
+                .usernameIs("user")
+                .passwordIs("pass")
+                .domainIs("domain")
                 .init();
         /*List<Response> result = winexe
                 .execute()
@@ -18,7 +18,7 @@ public class TestWinexe {
                 .run();
         result.forEach(System.out::println);*/
         Wmic wmic = new Wmic();
-        Map<String, String> wmiParams = wmic.getWmiParam(winexe, "babikov", "computersystem", "username");
+        Map<String, String> wmiParams = wmic.getWmiParam(winexe, "hostname", "computersystem", "username");
         for (Map.Entry<String,String> pair : wmiParams.entrySet()){
             System.out.println(pair.getKey()+":"+pair.getValue());
         }
